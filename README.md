@@ -95,4 +95,69 @@ Jenkins Getting Started Screen.
 
 <img width="1912" height="1017" alt="image" src="https://github.com/user-attachments/assets/7eadd627-95d8-4792-948b-265bb5bbf744" />
 
+## 2B — Install Docker
+```
+sudo apt update
+sudo apt install ca-certificates curl gnupg -y
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+apt-cache policy docker-ce
+sudo apt install docker-ce -y 
+sudo systemctl status docker
+```
+After the docker installation, we create a sonarqube container (Remember to add 9000 ports in the security group).
+Now our sonarqube is up and running
+
+```
+docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+```
+<img width="1080" height="411" alt="image" src="https://github.com/user-attachments/assets/1a5eb905-3b82-4646-ada7-cad0675ab66d" />
+
+Now our sonarqube is up and running
+
+<img width="1342" height="532" alt="image" src="https://github.com/user-attachments/assets/ebc07a5b-f9a8-4b45-a3ec-cfdc49b9fc38" />
+
+Enter username and password, click on login and change password
+
+```
+username admin
+password admin
+```
+<img width="1112" height="945" alt="image" src="https://github.com/user-attachments/assets/e3644483-ae47-4b23-916b-e42f5c8e2af6" />
+
+Update New password, This is Sonar Dashboard.
+
+<img width="1916" height="687" alt="image" src="https://github.com/user-attachments/assets/c46bca97-c222-48ff-b294-5362d8c092d7" />
+
+## 2C — Install Trivy
+
+```
+vi trivy.sh
+```
+```
+sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+sudo apt-get update
+sudo apt-get install trivy -y
+```
+## Step 3: Create a TMDB API Key
+
+Next, we will create a TMDB API key
+
+Open a new tab in the Browser and search for TMDB
+
+<img width="1318" height="835" alt="image" src="https://github.com/user-attachments/assets/f602c275-131c-422f-8758-cb53d9153ca4" />
+
+Click on the first result, you will see this page.
+<img width="1897" height="907" alt="image" src="https://github.com/user-attachments/assets/bbb1c94f-7589-49fd-9d02-90583ebcd90e" />
+
+Click on the Login on the top right. You will get this page.
+
+You need to create an account here. click on click here. I have account that’s why i added my details there.
+
+
 
