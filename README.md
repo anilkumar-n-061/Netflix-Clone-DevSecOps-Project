@@ -338,5 +338,113 @@ sudo systemctl status prometheus
 
 Suppose you encounter any issues with Prometheus or are unable to start it. The easiest way to find the problem is to use the journalctl command and search for errors.
 
+```
+journalctl -u prometheus -f --no-pager
+```
 
+Now we can try to access it via the browser. I’m going to be using the IP address of the Ubuntu server. You need to append port 9090 to the IP.
 
+<img width="1920" height="500" alt="image" src="https://github.com/user-attachments/assets/5f84de30-bae2-4462-9f9a-270b098d3e56" />
+
+If you go to targets, you should see only one – Prometheus target. It scrapes itself every 15 seconds by default.
+
+Install Node Exporter on Ubuntu 22.04
+Next, we’re going to set up and configure Node Exporter to collect Linux system metrics like CPU load and disk I/O. Node Exporter will expose these as Prometheus-style metrics. Since the installation process is very similar, I’m not going to cover as deep as Prometheus.
+
+First, let’s create a system user for Node Exporter by running the following command:
+
+```
+sudo useradd \
+    --system \
+    --no-create-home \
+    --shell /bin/false node_exporter
+```
+
+<img width="785" height="151" alt="image" src="https://github.com/user-attachments/assets/057ccf34-601e-485f-9ad6-13ed64547856" />
+
+You can download Node Exporter from the same page.
+
+Use the wget command to download the binary.
+
+```
+wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+```
+
+<img width="1907" height="442" alt="image" src="https://github.com/user-attachments/assets/465ea633-acf6-4d96-8714-b7f1b5f7c187" />
+
+Extract the node exporter from the archive.
+
+```
+tar -xvf node_exporter-1.6.1.linux-amd64.tar.gz
+```
+Move binary to the /usr/local/bin.
+
+```
+sudo mv \
+  node_exporter-1.6.1.linux-amd64/node_exporter \
+  /usr/local/bin/
+```
+
+<img width="1677" height="84" alt="image" src="https://github.com/user-attachments/assets/0b2f6b37-9d75-40ff-b883-7ccf91dec417" />
+
+Clean up, and delete node_exporter archive and a folder.
+
+```
+rm -rf node_exporter*
+```
+
+Verify that you can run the binary.
+
+```
+node_exporter --version
+```
+
+<img width="930" height="246" alt="image" src="https://github.com/user-attachments/assets/58379033-127d-4688-8419-77194ef90783" />
+
+Node Exporter has a lot of plugins that we can enable. If you run Node Exporter help you will get all the options.
+
+```
+node_exporter --help
+
+```
+
+–collector.logind We’re going to enable the login controller, just for the demo.
+
+Next, create a similar systemd unit file.
+
+```
+sudo vim /etc/systemd/system/node_exporter.service
+```
+
+### node_exporter.service
+
+```
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/node_exporter \
+    --collector.logind
+[Install]
+WantedBy=multi-user.target
+```
+
+<img width="503" height="344" alt="image" src="https://github.com/user-attachments/assets/af15b8c9-ad6b-4986-b5a4-431da92e74f3" />
+
+```
+sudo systemctl enable node_exporter
+```
+
+Then start the Node Exporter.
+
+```
+sudo systemctl start node_exporter
+```
