@@ -448,3 +448,166 @@ Then start the Node Exporter.
 ```
 sudo systemctl start node_exporter
 ```
+
+Check the status of Node Exporter with the following command:
+
+```
+sudo systemctl status node_exporter
+```
+
+<img width="1885" height="511" alt="image" src="https://github.com/user-attachments/assets/370d65a2-5bcb-4403-9483-ef2ed11c764a" />
+
+If you have any issues, check logs with journalctl
+
+```
+journalctl -u node_exporter -f --no-pager
+```
+
+At this point, we have only a single target in our Prometheus. There are many different service discovery mechanisms built into Prometheus. For example, Prometheus can dynamically discover targets in AWS, GCP, and other clouds based on the labels. In the following tutorials, I’ll give you a few examples of deploying Prometheus in a cloud-specific environment. For this tutorial, let’s keep it simple and keep adding static targets. Also, I have a lesson on how to deploy and manage Prometheus in the Kubernetes cluster.
+
+To create a static target, you need to add job_name with static_configs.
+
+```
+sudo vim /etc/prometheus/prometheus.yml
+```
+<img width="907" height="111" alt="image" src="https://github.com/user-attachments/assets/dc233267-58f6-4dbd-b721-067eeb2e3acf" />
+
+prometheus.yml
+
+<img width="1198" height="618" alt="image" src="https://github.com/user-attachments/assets/5bb094ac-c26a-466a-9e08-2097cf1901b1" />
+
+By default, Node Exporter will be exposed on port 9100.
+
+Since we enabled lifecycle management via API calls, we can reload the Prometheus config without restarting the service and causing downtime.
+
+Before, restarting check if the config is valid.
+
+```
+promtool check config /etc/prometheus/prometheus.yml
+```
+
+Then, you can use a POST request to reload the config.
+
+```
+curl -X POST http://localhost:9090/-/reload
+```
+
+Check the targets section
+
+```
+http://<ip>:9090/targets
+```
+
+<img width="1918" height="722" alt="image" src="https://github.com/user-attachments/assets/0e0650ff-c308-4243-8a5d-9f3ff6995438" />
+
+Install Grafana on Ubuntu 22.04
+
+To visualize metrics we can use Grafana. There are many different data sources that Grafana supports, one of them is Prometheus.
+
+First, let’s make sure that all the dependencies are installed.
+
+```
+sudo apt-get install -y apt-transport-https software-properties-common
+```
+
+<img width="1171" height="201" alt="image" src="https://github.com/user-attachments/assets/902fdacd-295e-403a-a9e0-d9d8c76889cb" />
+
+Next, add the GPG key.
+
+```
+wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+```
+
+<img width="1162" height="157" alt="image" src="https://github.com/user-attachments/assets/6676df70-8867-4135-b0db-a29c590ad5fc" />
+
+```
+echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+```
+
+After you add the repository, update and install Garafana.
+
+```
+sudo apt-get update
+```
+```
+sudo apt-get -y install grafana
+```
+
+<img width="1543" height="622" alt="image" src="https://github.com/user-attachments/assets/268db166-113b-488f-86f4-9f16fee3b6ab" />
+
+To automatically start the Grafana after reboot, enable the service.
+
+```
+sudo systemctl enable grafana-server
+```
+
+Then start the Grafana.
+
+```
+sudo systemctl start grafana-server
+```
+
+<img width="1543" height="622" alt="image" src="https://github.com/user-attachments/assets/f4ac32ca-ede2-4b99-baa6-c81b32fc1801" />
+
+To check the status of Grafana, run the following command:
+
+```
+sudo systemctl status grafana-server
+```
+
+<img width="1881" height="530" alt="image" src="https://github.com/user-attachments/assets/2333433a-b8b8-44be-bc05-acd13bbd1c1b" />
+
+Go to http://<ip>:3000 and log in to the Grafana using default credentials. The username is admin, and the password is admin as well.
+
+```
+username admin
+password admin
+```
+
+<img width="1910" height="912" alt="image" src="https://github.com/user-attachments/assets/728d76bb-0d70-430e-91f0-9795b1e6d487" />
+
+When you log in for the first time, you get the option to change the password.
+
+To visualize metrics, you need to add a data source first.
+
+<img width="1895" height="692" alt="image" src="https://github.com/user-attachments/assets/907b289c-02ed-4af2-abe9-917cc4ceb90b" />
+
+<img width="1897" height="681" alt="image" src="https://github.com/user-attachments/assets/96dbbfc2-2a0b-4d9f-9c8d-941f022b2fdf" />
+
+For the URL, enter localhost:9090 and click Save and test. You can see Data source is working.
+
+```
+<public-ip:9090>
+```
+
+<img width="1901" height="902" alt="image" src="https://github.com/user-attachments/assets/77853884-e1f6-46cc-b19a-9ebe450d1420" />
+
+Click on Save and Test.
+
+<img width="1305" height="897" alt="image" src="https://github.com/user-attachments/assets/d74d6c2d-23fe-4785-b126-1a6691017e82" />
+
+Let’s add Dashboard for a better view
+
+<img width="1907" height="717" alt="image" src="https://github.com/user-attachments/assets/2e9607bd-9db4-453f-a487-d2fadbe65548" />
+
+Click on Import Dashboard paste this code 1860 and click on load
+
+<img width="1512" height="497" alt="image" src="https://github.com/user-attachments/assets/31abcf10-0042-49fa-8fd9-4faa5644f348" />
+
+Select the Datasource and click on Import
+
+<img width="1440" height="870" alt="image" src="https://github.com/user-attachments/assets/360c15c3-99da-470f-bfe6-796185826c14" />
+
+You will see this output
+
+<img width="1905" height="920" alt="image" src="https://github.com/user-attachments/assets/1704a3d9-e605-46d6-9fd1-7ac3692c9409" />
+
+Step 5 — Install the Prometheus Plugin and Integrate it with the Prometheus server
+Let’s Monitor JENKINS SYSTEM
+
+Need Jenkins up and running machine
+
+Goto Manage Jenkins –> Plugins –> Available Plugins
+
+Search for Prometheus and install it
+
