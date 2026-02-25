@@ -611,3 +611,295 @@ Goto Manage Jenkins –> Plugins –> Available Plugins
 
 Search for Prometheus and install it
 
+
+
+Step 6 — Email Integration With Jenkins and Plugin Setup
+Install Email Extension Plugin in Jenkins
+
+<img width="1846" height="427" alt="image" src="https://github.com/user-attachments/assets/433299c6-253c-46fd-80a0-019616b4217c" />
+
+Go to your Gmail and click on your profile
+
+Then click on Manage Your Google Account –> click on the security tab on the left side panel you will get this page(provide mail password).
+
+<img width="1902" height="913" alt="image" src="https://github.com/user-attachments/assets/9010084c-363d-4fbe-8659-69d03d77af93" />
+
+2-step verification should be enabled.
+
+Search for the app in the search bar you will get app passwords like the below image
+
+<img width="1728" height="627" alt="image" src="https://github.com/user-attachments/assets/442d7071-0f77-4970-8d31-c3a5261ac419" />
+
+<img width="1462" height="822" alt="image" src="https://github.com/user-attachments/assets/1d28dbbf-2b47-4ab6-b0ca-875c38969bb2" />
+
+Click on other and provide your name and click on Generate and copy the password
+
+<img width="742" height="612" alt="image" src="https://github.com/user-attachments/assets/0fdb8aee-7e16-4dba-9ff1-c7a60c76e2a3" />
+
+In the new update, you will get a password like this
+
+Once the plugin is installed in Jenkins, click on manage Jenkins –> configure system there under the E-mail Notification section configure the details as shown in the below image
+
+<img width="1891" height="835" alt="image" src="https://github.com/user-attachments/assets/f177acce-86fb-4ee4-84fe-8674c8c14e18" />
+
+<img width="1811" height="669" alt="image" src="https://github.com/user-attachments/assets/08930325-89a1-40d4-99f0-b0125bd16e0f" />
+
+Click on Apply and save.
+
+Click on Manage Jenkins–> credentials and add your mail username and generated password
+
+<img width="1902" height="905" alt="image" src="https://github.com/user-attachments/assets/872d136e-238a-4aac-86ac-94409fadeadb" />
+
+This is to just verify the mail configuration
+
+Now under the Extended E-mail Notification section configure the details as shown in the below images
+
+<img width="1907" height="833" alt="image" src="https://github.com/user-attachments/assets/32e5a735-e3a7-4be1-baf7-4f92a0b3202d" />
+
+<img width="1758" height="323" alt="image" src="https://github.com/user-attachments/assets/ad0687ee-c968-45db-9a9f-d9743670bd9f" />
+
+<img width="1892" height="906" alt="image" src="https://github.com/user-attachments/assets/a7da2814-20b0-4e42-b21f-f4c1f54fe060" />
+
+Click on Apply and save.
+
+```
+post {
+     always {
+        emailext attachLog: true,
+            subject: "'${currentBuild.result}'",
+            body: "Project: ${env.JOB_NAME}<br/>" +
+                "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                "URL: ${env.BUILD_URL}<br/>",
+            to: 'postbox.aj99@gmail.com',  #change Your mail
+            attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+        }
+    }
+```
+
+Next, we will log in to Jenkins and start to configure our Pipeline in Jenkins
+
+Step 7 — Install Plugins like JDK, Sonarqube Scanner, NodeJs, OWASP Dependency Check
+7A — Install Plugin
+Goto Manage Jenkins →Plugins → Available Plugins →
+
+Install below plugins
+
+1 → Eclipse Temurin Installer (Install without restart)
+
+2 → SonarQube Scanner (Install without restart)
+
+3 → NodeJs Plugin (Install Without restart)
+
+<img width="1902" height="642" alt="image" src="https://github.com/user-attachments/assets/1150b30b-f042-4ffd-928c-d6e4eabe7596" />
+
+7B — Configure Java and Nodejs in Global Tool Configuration
+Goto Manage Jenkins → Tools → Install JDK(17) and NodeJs(16)→ Click on Apply and Save
+
+<img width="1890" height="682" alt="image" src="https://github.com/user-attachments/assets/353eae73-97e8-449c-9d49-27ba2b946977" />
+
+<img width="1890" height="842" alt="image" src="https://github.com/user-attachments/assets/12479632-c64b-4fd4-87eb-5983e6484047" />
+
+7C — Create a Job
+create a job as Netflix Name, select pipeline and click on ok.
+
+Step 8 — Configure Sonar Server in Manage Jenkins
+Grab the Public IP Address of your EC2 Instance, Sonarqube works on Port 9000, so <Public IP>:9000. Goto your Sonarqube Server. Click on Administration → Security → Users → Click on Tokens and Update Token → Give it a name → and click on Generate Token
+
+<img width="1918" height="758" alt="image" src="https://github.com/user-attachments/assets/243f3b89-fd6f-4416-9a06-3ba5bd4aee76" />
+
+click on update Token
+
+<img width="1913" height="612" alt="image" src="https://github.com/user-attachments/assets/1802aad4-ddd3-475c-a150-bcd79c50a2ab" />
+
+Create a token with a name and generate
+
+<img width="1752" height="710" alt="image" src="https://github.com/user-attachments/assets/aa74394d-04f1-42df-9970-6ed9e6f884ec" />
+
+copy Token
+
+Goto Jenkins Dashboard → Manage Jenkins → Credentials → Add Secret Text. It should look like this
+
+<img width="1910" height="903" alt="image" src="https://github.com/user-attachments/assets/635cac63-cee2-48d4-924f-39d297f91b0e" />
+
+You will this page once you click on create
+
+Now, go to Dashboard → Manage Jenkins → System and Add like the below image.
+
+<img width="1897" height="901" alt="image" src="https://github.com/user-attachments/assets/2fde4b0a-028d-4a96-bfdd-ce1d7ce3fbcb" />
+
+Click on Apply and Save
+
+The Configure System option is used in Jenkins to configure different server
+
+Global Tool Configuration is used to configure different tools that we install using Plugins
+
+We will install a sonar scanner in the tools.
+
+<img width="1917" height="898" alt="image" src="https://github.com/user-attachments/assets/f48c672e-4fdd-4f96-af9e-0e9fd6120271" />
+
+In the Sonarqube Dashboard add a quality gate also
+
+Administration–> Configuration–>Webhooks
+
+<img width="1895" height="701" alt="image" src="https://github.com/user-attachments/assets/0ba75ff8-3264-49f7-80a1-f104ad7d4f78" />
+
+Click on Create
+
+<img width="1918" height="463" alt="image" src="https://github.com/user-attachments/assets/71268fa5-0c2e-413e-aae8-ee50ac05485b" />
+
+Add details
+
+```
+#in url section of quality gate
+<http://jenkins-public-ip:8080>/sonarqube-webhook/
+```
+
+Let’s go to our Pipeline and add the script in our Pipeline Script.
+
+```
+pipeline{
+    agent any
+    tools{
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+    environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+    }
+    stages {
+        stage('clean workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage('Checkout from Git'){
+            steps{
+                git branch: 'main', url: 'https://github.com/Aj7Ay/Netflix-clone.git'
+            }
+        }
+        stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                    -Dsonar.projectKey=Netflix '''
+                }
+            }
+        }
+        stage("quality gate"){
+           steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh "npm install"
+            }
+        }
+    }
+    post {
+     always {
+        emailext attachLog: true,
+            subject: "'${currentBuild.result}'",
+            body: "Project: ${env.JOB_NAME}<br/>" +
+                "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                "URL: ${env.BUILD_URL}<br/>",
+            to: 'postbox.aj99@gmail.com',
+            attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+        }
+    }
+}
+```
+
+Click on Build now, you will see the stage view like this
+
+<img width="1467" height="552" alt="image" src="https://github.com/user-attachments/assets/5f023a6b-4aa4-43d0-9cc3-44db788989ba" />
+
+<img width="1280" height="208" alt="image" src="https://github.com/user-attachments/assets/7592e5ac-b584-445d-a749-0c7ec5441797" />
+
+
+You can see the report has been generated and the status shows as passed. You can see that there are 3.2k lines it scanned. To see a detailed report, you can go to issues.
+
+Step 9 — Install OWASP Dependency Check Plugins
+GotoDashboard → Manage Jenkins → Plugins → OWASP Dependency-Check. Click on it and install it without restart.
+
+<img width="1902" height="401" alt="image" src="https://github.com/user-attachments/assets/85c55179-40c7-462a-a1c4-02b843e62320" />
+
+First, we configured the Plugin and next, we had to configure the Tool
+
+Goto Dashboard → Manage Jenkins → Tools →
+
+<img width="1892" height="910" alt="image" src="https://github.com/user-attachments/assets/fbd57f10-3870-4fd3-be69-c07b640f5b76" />
+
+Click on Apply and Save here.
+
+Now go configure → Pipeline and add this stage to your pipeline and build.
+
+```
+stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy fs . > trivyfs.txt"
+            }
+        }
+```
+
+The stage view would look like this,
+
+<img width="1461" height="371" alt="image" src="https://github.com/user-attachments/assets/c81cc712-4448-4093-b8d8-f099b43fbf4a" />
+
+You will see that in status, a graph will also be generated and Vulnerabilities.
+
+<img width="1451" height="703" alt="image" src="https://github.com/user-attachments/assets/b87e7f37-1119-423e-964c-945ca0e40ace" />
+
+Step 10 — Docker Image Build and Push
+We need to install the Docker tool in our system, Goto Dashboard → Manage Plugins → Available plugins → Search for Docker and install these plugins
+
+Docker
+
+Docker Commons
+
+Docker Pipeline
+
+Docker API
+
+docker-build-step
+
+and click on install without restart
+
+<img width="1882" height="916" alt="image" src="https://github.com/user-attachments/assets/0996df16-4e98-4a8d-b51d-1787aa96a4eb" />
+
+Now, goto Dashboard → Manage Jenkins → Tools →
+
+<img width="1918" height="908" alt="image" src="https://github.com/user-attachments/assets/2e488cf9-2bc1-4f28-9840-abf8aa8b2ddc" />
+
+Add DockerHub Username and Password under Global Credentials
+
+<img width="1916" height="918" alt="image" src="https://github.com/user-attachments/assets/a045c550-b26c-4a6c-bcb3-844071bb39f2" />
+
+Add this stage to Pipeline Script
+
+```
+stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
+                       sh "docker build --build-arg TMDB_V3_API_KEY=Aj7ay86fe14eca3e76869b92 -t netflix ."
+                       sh "docker tag netflix anilkumar061/netflix:latest "
+                       sh "docker push anilkumar061/netflix:latest "
+                    }
+                }
+            }
+        }
+        stage("TRIVY"){
+            steps{
+                sh "trivy image anilkumar061/netflix:latest > trivyimage.txt"
+            }
+        }
+```
