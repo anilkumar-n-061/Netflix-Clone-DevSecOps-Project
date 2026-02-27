@@ -901,6 +901,38 @@ stage("Docker Build & Push"){
             steps{
                 sh "trivy image anilkumar061/netflix:latest > trivyimage.txt"
             }
+
+        stage('Deploy to container'){
+            steps{
+                sh 'docker run -d --name netflix -p 8081:80 sevenajay/netflix:latest'
+              }
+            }
         }
 ```
-ghfj
+
+You will see the output below, with a dependency trend.
+
+<img width="642" height="273" alt="image" src="https://github.com/user-attachments/assets/c2ad87e5-692c-4813-9338-418faadf4ad2" />
+
+<img width="1558" height="257" alt="image" src="https://github.com/user-attachments/assets/265562b5-24c9-4b20-9671-3b5c29aacc9a" />
+
+When you log in to Dockerhub, you will see a new image is created
+
+<Jenkins-public-ip:8081>
+
+You will get this output
+
+<img width="1902" height="967" alt="image" src="https://github.com/user-attachments/assets/b4812574-a0fd-4e8a-9568-727cf971d44a" />
+
+## Step 11 — Kuberenetes Setup
+
+Connect your machines to Putty or Mobaxtreme
+
+```
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+# in case your in root exit from it and run below commands
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
