@@ -1167,15 +1167,13 @@ kubectl get svc #use anyone
 
 ## 🛠️ Author & Community  
 
-This project is crafted by **[Harshhaa](https://github.com/NotHarshhaa)** 💡.  
+This project is crafted by **[Anilkumar N](https://github.com/CloudSarathi)** 💡.  
 I’d love to hear your feedback! Feel free to share your thoughts.  
 
 📧 **Connect with me:**
 
-- **GitHub**: [@NotHarshhaa](https://github.com/NotHarshhaa)  
-- **Blog**: [ProDevOpsGuy](https://blog.prodevopsguytech.com)  
-- **Telegram Community**: [Join Here](https://t.me/prodevopsguy)  
-- **LinkedIn**: [Harshhaa Vardhan Reddy](https://www.linkedin.com/in/harshhaa-vardhan-reddy/)  
+- **GitHub**: [@CloudSarathi](https://github.com/CloudSarathi)  
+- **LinkedIn**: [Anilkumar N](www.linkedin.com/in/anilkumar061)  
 
 ---
 
